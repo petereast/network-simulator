@@ -4,3 +4,6 @@ class machine:
     def __init__(self):
         self.type = "Generic Machine"
         pass
+
+    def recvHook(self, ifaceid):
+        print("[Info ] Parent RECVHOOK")

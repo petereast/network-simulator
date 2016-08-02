@@ -5,13 +5,13 @@ import interface_ids, packet
 
 class interface:
     def __init__(self, parent):
-        print("Created an interface")
+        print("[Info ]Created an interface")
 
         self.peer = None
 
         self.iid = interface_ids.generate_interface_id()
         self.addr = '' #find a way to generate an address
-        print("interface_id: {0}".format(self.iid))
+        print("[Info ]interface_id: {0}".format(self.iid))
 
         self.parent = parent
         # self.parent is the 'device' which has this interface
@@ -28,18 +28,22 @@ class interface:
         # Connect this interface to it's peer
         # (This represents a physical connection)
         if self.peer != None and peer.peer != None:
-            print("[Error] A connection already exists")
+            print("[Info ][Error] A connection already exists")
         elif self.peer == peer:
-            print("[Warn ] This node is already connected to this peer")
+            print("[Info ][Warn ] This node is already connected to this peer")
         else:
             self.peer = peer
             self.peer.peer = self
 
-    def send(self, packet):
+    def send(self, outgoing_packet):
         # Add a packet to the incoming buffer of the peer
 
+        # Make sure an actual packet is being sent
+        if type(outgoing_packet) != packet.packet:
+            print("[Info ][Warn ] This could be an issue, you've sent something which isn't a packet")
+
         if self.peer != None:
-            self.peer.incoming_buffer.append(packet)
+            self.peer.incoming_buffer.append(outgoing_packet)
             #TODO: Add something to respond to the packets
             try:
                 # Trigger the peer's parent with the packet
@@ -47,10 +51,10 @@ class interface:
             except NameError:
                 self.peer.send_alert()
             except AttributeError:
-                print("Sending to nothing")
+                print("[Info ] Sending to nothing")
         else:
-            print("[Error] No connection")
+            print("[Info ][Error] No connection")
         pass
 
     def send_alert(self):
-        print("Gotit! ({0})".format(self.iid))
+        print("[Info ]Gotit! ({0})".format(self.iid))

@@ -9,6 +9,7 @@ class switch(machine):
 
         self.ifaces = [node.interface(self) for i in range(16)]
         # Populate a lookup table of the interfaces
+        self.gateways = []
         self.ifaces_lookup = dict()
         for index, iface in enumerate(self.ifaces):
             self.ifaces_lookup[iface.iid] = index
@@ -17,10 +18,31 @@ class switch(machine):
         for index, iface in enumerate(self.ifaces):
             if iface.peer == None:
                 self.ifaces[index].connect(peer_iface)
-                print("Connected to {0} (port: {1})".format(iface.iid, index))
+                # Check if a router has been connected
+                if "Router" in self.ifaces[index].peer.parent.type:
+                    print("[Info ] Switch iface {2} connected to {0} [Router] (port: {1})".format(iface.peer.iid, index, iface.iid))
+                    self.gateways.append(self.ifaces[index].peer.iid)
+                else:
+                    print("[Info ] Switch iface {2} connected to {0} (port: {1})".format(iface.peer.iid, index, iface.iid))
                 return 0
         print("[Warn ] All of the ports are in use")
 
     def recvHook(self, ifaceid):
-        print("Recieved a packet from {0}".format(ifaceid))
-        print(self.ifaces[self.ifaces_lookup[ifaceid]].incoming_buffer)
+        print("[Info ] Switch recieved a packet from {0}".format(ifaceid))
+        recvd_packet = self.ifaces[self.ifaces_lookup[ifaceid]].incoming_buffer.pop(0)
+        # Check if the recieved packet is destined for an interface connected to
+        # this switch
+
+        destport = None
+
+        for l_iface in self.ifaces:
+            if l_iface.peer.iid == recvd_packet.to_ifaceid:
+                destport = self.ifaces_lookup[l_iface.iid]
+                break
+
+        if destport != None:
+            print("[Info ] Successfully switched")
+            self.ifaces[destport].send(recvd_packet)
+        else:
+            #give this to a router to handle this
+            pass

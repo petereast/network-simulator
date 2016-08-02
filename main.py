@@ -2,24 +2,22 @@
 
 import sys
 
-import node, switch
+import node, switch, packet
+from machine import machine
 
 def main():
-    print("network-simulator")
-    print("Peter's network simulator, as produced during a holiday")
+    print("[Info ]network-simulator")
+    print("[Info ]Peter's network simulator, as produced during a holiday")
     test()
 def test():
-    a, b, c, d, f = node.interface(None), node.interface(None),node.interface(None), node.interface(None), node.interface(None)
+    a, b, c, d, f = node.interface(machine()), node.interface(machine()),node.interface(machine()), node.interface(machine()), node.interface(machine())
     e = switch.switch()
     a.connect(b)
-    a.send("hello")
-    b.send("goodbye")
-
+    a.send(packet.packet("hello", None, None))
     e.connect(c)
     e.connect(d)
     e.connect(f)
-
-    c.send("Hello")
-    print(c.peer.iid)
+    print(c.iid)
+    c.send(packet.packet("Hello", "IFACE0x3", c.iid))
 
 main()
