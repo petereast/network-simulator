@@ -23,7 +23,6 @@ class interface:
         # The parent can put things into the outgoing_buffer and other interfaces
         # can take things from the outgoing buffer
 
-        #TODO: Define a class for a packet.
 
     def connect(self, peer):
         # Connect this interface to it's peer
@@ -42,8 +41,13 @@ class interface:
         if self.peer != None:
             self.peer.incoming_buffer.append(packet)
             #TODO: Add something to respond to the packets
-
-            self.peer.send_alert()
+            try:
+                # Trigger the peer's parent with the packet
+                self.peer.parent.recvHook(self.peer.iid)
+            except NameError:
+                self.peer.send_alert()
+            except AttributeError:
+                print("Sending to nothing")
         else:
             print("[Error] No connection")
         pass
