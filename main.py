@@ -17,7 +17,6 @@ def test():
     e.connect(c)
     e.connect(d)
     e.connect(f)
-    print(c.iid)
     c.send(packet.packet("Hello", "IFACE0x3", c.iid))
 
 main()

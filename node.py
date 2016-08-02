@@ -5,13 +5,11 @@ import interface_ids, packet
 
 class interface:
     def __init__(self, parent):
-        print("[Info ]Created an interface")
-
         self.peer = None
 
         self.iid = interface_ids.generate_interface_id()
         self.addr = '' #find a way to generate an address
-        print("[Info ]interface_id: {0}".format(self.iid))
+        print("[Info ] Created interface_id: {0}".format(self.iid))
 
         self.parent = parent
         # self.parent is the 'device' which has this interface
@@ -22,6 +20,8 @@ class interface:
         self.outgoing_buffer = []
         # The parent can put things into the outgoing_buffer and other interfaces
         # can take things from the outgoing buffer
+
+        self.flags = []
 
 
     def connect(self, peer):
@@ -40,7 +40,7 @@ class interface:
 
         # Make sure an actual packet is being sent
         if type(outgoing_packet) != packet.packet:
-            print("[Info ][Warn ] This could be an issue, you've sent something which isn't a packet")
+            print("[Warn ] This could be an issue, you've sent something which isn't a packet")
 
         if self.peer != None:
             self.peer.incoming_buffer.append(outgoing_packet)
