@@ -22,10 +22,12 @@ class switch(machine):
                 self.ifaces[index].connect(peer_iface)
                 # Check if a router has been connected
                 if "Router Internal" in self.ifaces[index].peer.flags:
-                    print("[Info ] Switch iface {2} connected to {0} [Router] (port: {1})".format(iface.peer.iid, index, iface.iid))
+                    print("[Info ] Switch iface {2} connected to {0} [Router] (port: {1})"
+                        .format(iface.peer.iid, index, iface.iid))
                     self.gateway = self.ifaces[index].iid
                 else:
-                    print("[Info ] Switch iface {2} connected to {0} (port: {1})".format(iface.peer.iid, index, iface.iid))
+                    print("[Info ] Switch iface {2} connected to {0} (port: {1})"
+                        .format(iface.peer.iid, index, iface.iid))
                 return 0
         print("[Warn ] All of the ports are in this switch are in use")
 

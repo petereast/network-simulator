@@ -1,6 +1,7 @@
 # machine - defines a vitrual machine with zero or more network interfaces
 
-import service, node
+import service
+from node import interface
 
 class machine:
     _services = []
@@ -10,6 +11,17 @@ class machine:
     _interfaces_lookup = dict()
     def __init__(self):
         self.type = "Generic Machine"
+        self._services = []
+        self._services_lookup = dict()
+        self.flags = []
+        self._interfaces = []
+        self._interfaces_lookup = dict()
+
+        # Each machine needs a start function
+        self.start()
+
+    def start(self):
+        pass
 
     def recvHook(self, ifaceid):
         print("[Info ] Parent RECVHOOK")
@@ -33,16 +45,19 @@ class machine:
         except KeyError:
             return None
 
-    def _addInterface(self, interface = None, name = None):
-        if interface == None:
-            #Create a new interface
+    def serviceTick(self):
+        for s in self._services:
+            s._tick_handler()
 
-            interface = node.interface
-        self._interfaces.append(interface(self))
+    def _addInterface(self, new_interface, name = None):
+
+        self._interfaces.append(new_interface)
 
         if name == None:
             # Generate an interface name
             name = "auto{0}".format(len(self._interfaces)-1)
+
+        self._interfaces[-1].name = name
 
         self._interfaces_lookup[name] = len(self._interfaces)-1
 

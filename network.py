@@ -10,4 +10,5 @@ class network:
     def addMachine(self, machine = None):
         pass
 
-    def addSwitch(self, switch = None)
+    def addSwitch(self, switch = None):
+        pass

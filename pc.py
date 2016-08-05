@@ -5,10 +5,10 @@ from node import interface
 from dhcp_service import dhcp_client
 
 class pc(machine):
-    def __init__(self):
+    def start(self):
         print("[Info ] I MADE A MACHine")
 
-        self._addInterface()
+        self._addInterface(interface(self))
 
         #print("[DEBUG] ", self._interfaces_lookup)
         # Flags initialisation
@@ -16,3 +16,6 @@ class pc(machine):
 
         # TODO: Make a dhcp client service.
         self._addService(dhcp_client, "dhcp-client")
+        self._getService("dhcp-client")._config(interface_name = self.getInterface().name)
+
+        #self.serviceTick()

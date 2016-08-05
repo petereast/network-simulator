@@ -5,7 +5,7 @@ from service import service
 
 class routing_table(service):
     def __init__(self, parent):
-
+        self.type = "Generic Routing Table"
         self.table = dict()
         pass
 

@@ -8,13 +8,13 @@ from dhcp_service import *
 from routing_table import *
 
 class router(machine):
-    def __init__(self):
+    def start(self):
         self.type = "Generic Router"
 
-        self._addInterface(name="internal-iface")
+        self._addInterface(interface(self), name="internal-iface")
         self.getInterface("internal-iface").flags.append("Router Internal")
 
-        self._addInterface(name="external-iface")
+        self._addInterface(interface(self), name="external-iface")
         self.external_iface = interface(self)
 
         # Initialise the services for this machine
