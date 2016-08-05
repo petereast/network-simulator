@@ -26,6 +26,11 @@ class dhcp_service(service):
             # TODO: Send a message "HERE U GO U CAN HAZ THIS ADDRESS: `{0}`"
             self.addrmap[addr] = source_ifaceid
 
+            #Record this association with the routing_table service
+
+            r = self.parent._getService("routing")
+            r.assoc(source_ifaceid, addr)
+
             return "DHCPSUCCESS: {0}".format(addr)
              #The returned value is sent back to the original host
         except IndexError:

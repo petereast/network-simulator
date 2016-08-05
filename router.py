@@ -28,7 +28,8 @@ class router(machine):
 
             if recvd_packet.ptype == "dhcp-request":
                 d = self._getService("dhcp-server")
-                result = d.process_dhcp_request(recvd_packet)
+                result = d.generate_dhcp_packet(recvd_packet)
+                self.internal_iface.send(result)
 
 
             # This is the internal routing for this network

@@ -2,7 +2,7 @@
 
 import sys
 
-import node, switch, packet
+import node, switch, packet, router
 from machine import machine
 
 def main():
@@ -19,4 +19,7 @@ def test():
     e.connect(f)
     c.send(packet.packet("Hello", d.iid, c.iid))
     c.send(packet.packet("Goodbye", f.iid, c.iid))
+
+    r1 = router.router()
+    e.connect(r1.internal_iface)
 main()

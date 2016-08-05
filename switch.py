@@ -4,12 +4,14 @@ from machine import machine
 import node
 
 class switch(machine):
-    def __init__(self):
+    def __init__(self, ports=16):
         self.type = "Generic Switch"
 
-        self.ifaces = [node.interface(self) for i in range(16)]
-        # Populate a lookup table of the interfaces
+        # Create 'physical' interfaces for this switch
+        self.ifaces = [node.interface(self) for i in range(ports)]
+        # This will contain the address for a router connected to this switch
         self.gateway = None
+        # Populate a lookup table of the interfaces
         self.ifaces_lookup = dict()
         for index, iface in enumerate(self.ifaces):
             self.ifaces_lookup[iface.iid] = index
@@ -19,9 +21,9 @@ class switch(machine):
             if iface.peer == None:
                 self.ifaces[index].connect(peer_iface)
                 # Check if a router has been connected
-                if "Router" in self.ifaces[index].peer.parent.type:
+                if "Router Internal" in self.ifaces[index].peer.flags:
                     print("[Info ] Switch iface {2} connected to {0} [Router] (port: {1})".format(iface.peer.iid, index, iface.iid))
-                    self.gateway = (self.ifaces[index].iid)
+                    self.gateway = self.ifaces[index].iid
                 else:
                     print("[Info ] Switch iface {2} connected to {0} (port: {1})".format(iface.peer.iid, index, iface.iid))
                 return 0
