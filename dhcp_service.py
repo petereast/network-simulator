@@ -17,7 +17,7 @@ class dhcp_service(service):
         #The requests will follow the format:
         #"CAN I HAZ AN ADDRESS PLS"
 
-        if request.ptype == "dhcp-ask":
+        if request.ptype == "dhcp-request":
             source_ifaceid = request.from_ifaceid
             try:
                 addr = self.addrpool.pop(0)
@@ -37,9 +37,9 @@ class dhcp_service(service):
                 return "DHCPERROR1: No more addresses"
 
     def generate_dhcp_packet(self, request):
-        return packet(self._process_dhcp_request(request),
-            request.from_ifaceid,
-            request.to_ifaceid,
+        return packet(payload = self._process_dhcp_request(request),
+            to_ifaceid = request.from_ifaceid,
+            from_ifaceid = request.to_ifaceid,
             ptype="dhcp-reply")
 
 class dhcp_client(service):
@@ -58,7 +58,7 @@ class dhcp_client(service):
 
     def generate_request_packet(self, interface_name):
         print("[DEBUG]", self.parent.getInterface(interface_name).iid)
-        return packet("DHCPREQUEST",
+        return packet(payload="DHCPREQUEST",
             from_ifaceid=self.parent.getInterface(interface_name).iid,
             to_addr="BCAST",
             ptype="dhcp-request")
@@ -67,22 +67,25 @@ class dhcp_client(service):
         if response == None:
             print("[WARN ] dhcp-request: no response")
         elif response.ptype == "dhcp-reply" and response.payload[:11] == "DHCPSUCCESS":
-            self._set_addr(esponse.payload[13:])
+            self._set_addr(response.payload[13:])
             self.found_connection = True
         elif response.ptype == "dhcp-reply" and response.payload[:9] == "DHCPERROR":
             print("[ERROR]", response.payload)
+        elif response.ptype != "dhcp-reply":
+            pass
         else:
-            print("[ WTF ] Eh?") # This shouldn't happen
+            print("[ WTF ] Eh? This shouldn't happen")
         pass
 
     def _set_addr(self, addr):
-        self.parent.getInterface(interface_name).addr = addr
+        self.parent.getInterface(self.active_interface_name).addr = addr
 
     def tick(self):
         if self.active_interface_name != None and not self.found_connection:
             self.parent.getInterface(self.active_interface_name).send(
                 self.generate_request_packet(self.active_interface_name))
-
-            self.parse_response(
-                self.parent.getInterface(self.active_interface_name).recv()
-            )
+            # This next bit should wait for a recvHook
+    def getResponse(self):
+        self.parse_response(
+            self.parent.getInterface(self.active_interface_name).recv()
+        )

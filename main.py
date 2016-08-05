@@ -22,17 +22,22 @@ def test():
     # c.send(packet.packet("Hello", d.iid, c.iid))
     # c.send(packet.packet("Goodbye", f.iid, c.iid))
 
-    r1 = router.router()
-    e.connect(r1.getInterface("internal-iface"))
-    print("[DEBUG] r1iface", r1.getInterface("internal-iface"))
-
-    p = pc.pc()
-    e.connect(p.getInterface("auto0"))
-    print("[DEBUG] paut0", p.getInterface("auto0"))
-    p.serviceTick()
-
-    print(p.getInterface("auto0").addr)
     n = network.network()
 
+    r1 = router.router()
+    e.connect(r1.getInterface("internal-iface"))
+    n.addMachine(r1)
+
+
+    p = pc.pc()
+    p1 = pc.pc()
+    e.connect(p.getInterface("auto0"))
+    e.connect(p1.getInterface("auto0"))
     n.addMachine(p)
+    n.addMachine(p1)
+
+    print(p.getInterface("auto0").addr)
+    print(p1.getInterface("auto0").addr)
+
+    n.start()
 main()

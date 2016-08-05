@@ -32,15 +32,13 @@ class switch(machine):
         print("[Warn ] All of the ports are in this switch are in use")
 
     def recvHook(self, ifaceid):
-        print("[Info ] Switch recieved a packet from {0}".format(ifaceid))
+        print("[Info ] Switch recieved a packet from {0}.".format(ifaceid))
         recvd_packet = self.ifaces[self.ifaces_lookup[ifaceid]].incoming_buffer.pop(0)
-        # Check if the recieved packet is destined for an interface connected to
-        # this switch
-
+        print("POOP", recvd_packet.to_addr, recvd_packet.payload, recvd_packet.ptype)
         destport = None
 
         for l_iface in self.ifaces:
-            if l_iface.peer.iid == recvd_packet.to_ifaceid:
+            if l_iface.peer != None and l_iface.peer.iid == recvd_packet.to_ifaceid:
                 destport = self.ifaces_lookup[l_iface.iid]
                 break
 

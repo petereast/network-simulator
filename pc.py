@@ -19,3 +19,7 @@ class pc(machine):
         self._getService("dhcp-client")._config(interface_name = self.getInterface().name)
 
         #self.serviceTick()
+
+    def recvHook(self, ifaceid):
+
+        self._getService("dhcp-client").getResponse()

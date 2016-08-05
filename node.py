@@ -23,7 +23,7 @@ class interface():
 
         # This'll contain metadata about the interface
         self.flags = []
-        
+
         self.name = name
 
         #  Check if the parent machine has the 'auto-iface' flag.
@@ -57,10 +57,10 @@ class interface():
                 self.peer.parent.recvHook(self.peer.iid)
             except NameError:
                 self.peer.send_alert()
-            except AttributeError:
-                print("[Info ] Sending to nothing")
+            # except AttributeError:
+            #     print("[Info ] Sending to nothing")
         else:
-            print("[Info ][Error] No connection")
+            if not outgoing_packet.to_addr == "BCAST": print("[Error] No connection")
         pass
 
     def recv(self, i=0):

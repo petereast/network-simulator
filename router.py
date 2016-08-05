@@ -24,12 +24,17 @@ class router(machine):
     def recvHook(self, ifaceid):
         if ifaceid == self.getInterface("internal-iface").iid:
             recvd_packet = self.getInterface("internal-iface").recv()
-            print("[INFO ] Getting internal stuff to route outwards")
+            print("[INFO ] Getting internal stuff")
 
             if recvd_packet.ptype == "dhcp-request":
                 d = self._getService("dhcp-server")
                 result = d.generate_dhcp_packet(recvd_packet)
                 self.getInterface("internal-iface").send(result)
+
+            if recvd_packet.to_ifaceid in self._getService("routing").table:
+                pass
+                # TODO: Maybe refactor this check into the 'routung' service
+                # code. 
 
 
             # This is the internal routing for this network

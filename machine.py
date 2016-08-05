@@ -9,6 +9,8 @@ class machine:
     flags = []
     _interfaces = []
     _interfaces_lookup = dict()
+
+    _startmessage = True
     def __init__(self):
         self.type = "Generic Machine"
         self._services = []
@@ -21,10 +23,13 @@ class machine:
         self.start()
 
     def start(self):
+        if self._startmessage:
+            print("[INFO ] Don't forget to define your start function!")
+            self._startmessage = False
         pass
 
     def recvHook(self, ifaceid):
-        print("[Info ] Parent RECVHOOK")
+        print("[Info ] Parent RECVHOOK", ifaceid)
 
     def _addService(self, added_service, name = None):
         # if type(added_service) != service.service:
