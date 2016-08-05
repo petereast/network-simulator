@@ -33,17 +33,26 @@ class machine:
         except KeyError:
             return None
 
-    def _addInterface(self, interface = node.interface, name=None):
+    def _addInterface(self, interface = None, name = None):
+        if interface == None:
+            #Create a new interface
+
+            interface = node.interface
+        self._interfaces.append(interface(self))
 
         if name == None:
             # Generate an interface name
             name = "auto{0}".format(len(self._interfaces)-1)
-        self._interfaces.append(interface(self))
 
         self._interfaces_lookup[name] = len(self._interfaces)-1
 
-    def getInterface(self, name):
+    def getInterface(self, name=''):
         try:
             return self._interfaces[self._interfaces_lookup[name]]
         except KeyError:
-            return None
+            try:
+                print("[Warn ] Interface not found, using default")
+                return self._interfaces[0]
+            except IndexError:
+                print("[Warn ] No interfaces associated with this host")
+                return None

@@ -43,8 +43,12 @@ class switch(machine):
                 break
 
         if destport != None:
-            print("[Info ] Successfully switched")
             self.ifaces[destport].send(recvd_packet)
+        elif recvd_packet.to_addr == "BCAST":
+            #This is a broadcast packet - send it to all the connected hosts
+            for out_iface in self.ifaces:
+                out_iface.send(recvd_packet)
+
         else:
             if self.gateway != None:
                 print("[INFO ] Sending the packet to a router")

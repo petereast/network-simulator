@@ -27,7 +27,7 @@ class interface:
         #  Check if the parent machine has the 'auto-iface' flag.
         if type(self.parent) == machine.machine and "auto-iface" in self.parent.flags:
             pass
-    def auto_connect(self):
+    def auto_connect(self, peer_pc):
         pass
     def connect(self, peer):
         # Connect this interface to it's peer

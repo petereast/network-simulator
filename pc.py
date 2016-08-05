@@ -8,12 +8,11 @@ class pc(machine):
     def __init__(self):
         print("[Info ] I MADE A MACHine")
 
-        self.iface = interface(self)
+        self._addInterface()
 
+        #print("[DEBUG] ", self._interfaces_lookup)
         # Flags initialisation
         self.flags.append("auto-iface")
 
         # TODO: Make a dhcp client service.
         self._addService(dhcp_client, "dhcp-client")
-
-        # TODO: Change the way machines register interfaces

@@ -3,3 +3,6 @@
 class service:
     def __init__(self, parent):
         self.type = "Generic Service"
+
+    def __config(self, **args):
+        print("CONFIG!")

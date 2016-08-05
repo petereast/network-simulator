@@ -2,9 +2,6 @@
 
 from service import service
 from packet import packet
-import re
-
-import sqlite3
 
 class dhcp_service(service):
     def __init__(self, parent):
@@ -47,3 +44,19 @@ class dhcp_client(service):
     def __init__(self, parent):
         self.type = "Generic DHCP Client"
         self.parent = parent
+        self.active_interface_name = None
+        self.active_interface = None
+
+    def __config(self, interface_name = None):
+
+        if interface_name != None:
+            self.active_interface_name = interface_name
+
+            self.active_interface = self.parent.getInterface(interface_name)
+
+
+    def generate_request_packet(self, interface_name):
+        return packet("DHCPREQUEST", from_ifaceid=self.parent.getInterface(interface_name).iid, to_addr="BCAST")
+
+    def _set_addr(self, addr):
+        self.parent.getInterface(interface_name).addr = addr
