@@ -17,6 +17,6 @@ def test():
     e.connect(c)
     e.connect(d)
     e.connect(f)
-    c.send(packet.packet("Hello", "IFACE0x3", c.iid))
-
+    c.send(packet.packet("Hello", d.iid, c.iid))
+    c.send(packet.packet("Goodbye", f.iid, c.iid))
 main()

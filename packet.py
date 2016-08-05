@@ -1,7 +1,7 @@
 # This class defines a packet of data
 
 class packet:
-    def __init__(self, payload, to_ifaceid, from_ifaceid, to_addr='', from_addr=''):
+    def __init__(self, payload, to_ifaceid='', from_ifaceid='', to_addr='', from_addr='', ptype=None):
         """A Container for data passed between interfaces"""
         self.to_ifaceid = to_ifaceid
         self.from_ifaceid = from_ifaceid
@@ -11,6 +11,8 @@ class packet:
         self.from_addr = from_addr
 
         self.size = len(payload)
+
+        self.ptype = ptype
 
 class encapsulated_packet:
     def __init__(self):
