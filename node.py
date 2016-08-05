@@ -1,7 +1,7 @@
 # This class represents a single network interface connected to this virtual
 # network
 
-import interface_ids, packet
+import interface_ids, packet, machine
 
 class interface:
     def __init__(self, parent):
@@ -21,9 +21,14 @@ class interface:
         # The parent can put things into the outgoing_buffer and other interfaces
         # can take things from the outgoing buffer
 
+        # This'll contain metadata about the interface
         self.flags = []
 
-
+        #  Check if the parent machine has the 'auto-iface' flag.
+        if type(self.parent) == machine.machine and "auto-iface" in self.parent.flags:
+            pass
+    def auto_connect(self):
+        pass
     def connect(self, peer):
         # Connect this interface to it's peer
         # (This represents a physical connection)
@@ -55,6 +60,9 @@ class interface:
         else:
             print("[Info ][Error] No connection")
         pass
+
+    def recv(self, i=0):
+        return self.incoming_buffer.pop(i)
 
     def send_alert(self):
         print("[Info ]Gotit! ({0})".format(self.iid))

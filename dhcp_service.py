@@ -9,7 +9,7 @@ import sqlite3
 class dhcp_service(service):
     def __init__(self, parent):
 
-        self.type = "Generic DHCP Service"
+        self.type = "Generic DHCP Server"
 
         self.addrpool = [hex(x) for x in range(1, 0xff)]
         self.addrmap = dict()
@@ -42,3 +42,8 @@ class dhcp_service(service):
         payload = self._process_dhcp_request(request)
 
         return packet(payload, request.from_ifaceid, request.to_ifaceid, ptype="dhcp-reply")
+
+class dhcp_client(service):
+    def __init__(self, parent):
+        self.type = "Generic DHCP Client"
+        self.parent = parent

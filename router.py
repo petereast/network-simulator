@@ -11,10 +11,10 @@ class router(machine):
     def __init__(self):
         self.type = "Generic Router"
 
-        self.internal_iface = interface(self)
-        self.internal_iface.flags.append("Router Internal")
-        # TODO: Make up some sort of enum for the interface flags
+        self._addInterface(name="internal-iface")
+        self.getInterface("internal-iface").flags.append("Router Internal")
 
+        self._addInterface(name="external-iface")
         self.external_iface = interface(self)
 
         # Initialise the services for this machine
@@ -22,19 +22,19 @@ class router(machine):
         self._addService(routing_table, "routing")
 
     def recvHook(self, ifaceid):
-        if ifaceid == self.internal_iface.iid:
-            recvd_packet = self.internal_iface.incoming_buffer.pop(0)
+        if ifaceid == self.getInterface("internal-iface").iid:
+            recvd_packet = self.getInterface("internal-iface").recv()
             print("[INFO ] Getting internal stuff to route outwards")
 
             if recvd_packet.ptype == "dhcp-request":
                 d = self._getService("dhcp-server")
                 result = d.generate_dhcp_packet(recvd_packet)
-                self.internal_iface.send(result)
+                self.getInterface("internal-iface").send(result)
 
 
             # This is the internal routing for this network
             # add code for dhcp etc here.
 
-        elif ifaceid == self.external_iface.iid:
+        elif ifaceid == self.getInterface("external-iface").iid:
             # Deal with the stuff from the outside
             pass

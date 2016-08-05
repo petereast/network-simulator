@@ -1,10 +1,13 @@
 # machine - defines a vitrual machine with zero or more network interfaces
 
-import service
+import service, node
 
 class machine:
     _services = []
     _services_lookup = dict()
+    flags = []
+    _interfaces = []
+    _interfaces_lookup = dict()
     def __init__(self):
         self.type = "Generic Machine"
 
@@ -27,5 +30,20 @@ class machine:
     def _getService(self, name):
         try:
             return self._services[self._services_lookup[name]]
+        except KeyError:
+            return None
+
+    def _addInterface(self, interface = node.interface, name=None):
+
+        if name == None:
+            # Generate an interface name
+            name = "auto{0}".format(len(self._interfaces)-1)
+        self._interfaces.append(interface(self))
+
+        self._interfaces_lookup[name] = len(self._interfaces)-1
+
+    def getInterface(self, name):
+        try:
+            return self._interfaces[self._interfaces_lookup[name]]
         except KeyError:
             return None
